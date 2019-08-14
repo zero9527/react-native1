@@ -13,6 +13,8 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.List;
 
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
