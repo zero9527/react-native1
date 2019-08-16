@@ -28,7 +28,6 @@ const List = (props) => {
   }, []);
   
   toDetail = () => {
-    console.log('click');
     props.navigation.navigate('Detail');
   }
 
@@ -44,7 +43,7 @@ const List = (props) => {
         data={arr}
         renderItem={
           ({item, index}) => (
-            <TouchableHighlight underlayColor="#eee" onPress={toDetail}>
+            <TouchableHighlight underlayColor="#f6f6f6" onPress={toDetail}>
               <View style={styles.listItem}>
                   <View style={styles.textContent}>
                     <Text style={{ fontSize: 18 }}>{ item.text }</Text>

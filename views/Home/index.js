@@ -1,28 +1,16 @@
-import React from "react";
-import { StyleSheet, View, Text, Button } from 'react-native';
+import React, { useState } from "react";
+import Header from './HomeContent/header';
+import HomeContent from './HomeContent';
 
 const Home = (props) => {
+  const [contentType, setContentType] = useState('recommand');
+
   return (
-    <View style={styles.home}>
-      <Text style={styles.homeText}>Home</Text>
-      <Button
-        title="to list"
-        onPress={() => props.navigation.navigate('List')}
-      />
-    </View>
+    <>
+      <Header onTagChange={(type) => setContentType(type)} />
+      <HomeContent contentType={contentType} navigation={props.navigation} />
+    </>
   )
 }
-
-const styles = StyleSheet.create({
-  home: {
-    height: '100%',
-    justifyContent: 'center'
-  },
-  homeText: {
-    marginBottom: 20,
-    fontSize: 22,
-    textAlign: 'center'
-  }
-})
 
 export default Home;

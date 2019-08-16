@@ -14,9 +14,9 @@ import MineScreen from './views/Mine';
 
 const HomeStack = createStackNavigator(
   {
-    // Home: {
-    //   screen: HomeScreen
-    // },
+    Home: {
+      screen: HomeScreen
+    },
     List: {
       screen: ListScreen
     },
@@ -29,13 +29,23 @@ const HomeStack = createStackNavigator(
   }
 );
 
-const SettingsStack = createStackNavigator({
-  Setting: SettingsScreen
-});
+const SettingsStack = createStackNavigator(
+  {
+    Setting: SettingsScreen
+  },
+  {
+    headerMode: 'none'
+  }
+);
 
-const MineStack = createStackNavigator({
-  Mine: MineScreen
-});
+const MineStack = createStackNavigator(
+  {
+    Mine: MineScreen
+  },
+  {
+    headerMode: 'none'
+  }
+);
 
 const tabNavigator = createBottomTabNavigator(
   {
