@@ -1,41 +1,44 @@
-import React, { useState } from 'react';
-import { View, Image, Text } from 'react-native';
-import styles from './style';
+import React, { useState, useEffect } from 'react';
+import ContentItem from './contentItem';
+import { Text } from 'react-native';
 import { iOS } from '../data';
 
-function IOS() {
+function IOS(props) {
   const [contentData, setContentData] = useState(iOS);
+  const [isRefreshing, setIsRefreshing] = useState(true);
+
+  useEffect(() => {
+    onRefresh();
+  }, []);
+
+  function onRefresh() {
+    console.log('下拉刷新');
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
+  }
+
+  function onEndReached({ distanceFromEnd }) {
+    console.log('distanceFromEnd: ', distanceFromEnd);
+  }
+
+  function onTagChange(type) {
+    console.log(type);
+  }
 
   return (
-    <>
-      {
-        contentData.map((item, index) => {
-          return (
-            <View 
-              key={index}
-              style={styles.contentDataItem}
-            >
-              <View style={[styles.row]}>
-                <Text style={{ color: 'purple' }}>{ item.type } · </Text>
-                <Text style={styles.grayItem}>{ item.author } · { item.time } · </Text>
-                <Text style={styles.grayItem}>{ item.tag }</Text>
-              </View>
-              <View>
-                <Text style={styles.contentDataTitle}>{ item.title }</Text>
-              </View>
-              <View style={[styles.row]}>
-                <Text style={styles.grayItem}>
-                  like: { item.like }
-                </Text>
-                <Text style={styles.grayItem}>
-                  talk: { item.talk }
-                </Text>
-              </View>
-            </View>
-          )
-        })
+    <ContentItem 
+      onTagChange={onTagChange}
+      contentData={contentData} 
+      isRefreshing={isRefreshing}
+      onRefresh={onRefresh}
+      onEndReached={onEndReached}
+      {...props}
+      renderItem={
+        () => <Text>iOS</Text>
       }
-    </>
+    />
   )
 }
 

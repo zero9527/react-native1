@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { View } from 'react-native';
 
 import HomeScreen from './views/Home';
-import ListScreen from './views/Home/List';
 import DetailScreen from './views/Home/Detail';
 
 import SettingsScreen from './views/Settings';
@@ -16,9 +15,6 @@ const HomeStack = createStackNavigator(
   {
     Home: {
       screen: HomeScreen
-    },
-    List: {
-      screen: ListScreen
     },
     Detail: {
       screen: DetailScreen
@@ -80,7 +76,7 @@ const tabNavigator = createBottomTabNavigator(
       }
     }),
     tabBarOptions: {
-      activeTintColor: 'tomato',
+      activeTintColor: '#007fff',
       inactiveTintColor: 'gray'
     },
   }

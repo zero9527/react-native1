@@ -1,65 +1,55 @@
-import React, { useState } from 'react';
-import { StyleSheet, FlatList, View, Image, Text, TouchableHighlight } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from './style';
+import React, { useState, useEffect } from 'react';
+import ContentItem from './contentItem';
+import { headerTagChangeList } from './index';
 import { recommand } from '../data';
+
+console.log(headerTagChangeList);
+let timer;
 
 function Recommand(props) {
   const [contentData, setContentData] = useState(recommand);
+  const [isRefreshing, setIsRefreshing] = useState(true);
 
-  function itemClick(item) {
-    props.toDetail(item);
+  useEffect(() => {
+    // if (!headerTagChangeList[props.contentType]) 
+    onRefresh();
+
+    return () => {
+      clearTimeout(timer);
+    }
+  }, []);
+
+  function onRefresh() {
+    setIsRefreshing(true);
+    timer = setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
+  }
+
+  function onEndReached({ distanceFromEnd }) {
+    console.log('distanceFromEnd: ', distanceFromEnd);
+    setContentData(contentData.concat(recommand[0]));
+  }
+
+  function onScroll(e) {
+    // console.log(e);
+  }
+
+  function onTagChange(type) {
+    console.log(type);
   }
 
   return (
-    <FlatList
-      keyExtractor={(item, index) => index.toString()}
-      data={contentData}
-      renderItem={
-        ({item, index}) => (
-          <TouchableHighlight 
-            underlayColor="#f6f6f6"
-            onPress={() => itemClick(item)}>
-            <View 
-              style={styles.contentDataItem}>
-              <Text style={[styles.row, styles.colorGray]}>
-                <Text style={{ color: 'purple' }}>{ item.type } · </Text>
-                <Text>{ item.author } · { item.time } · </Text>
-                <Text>{ item.tag }</Text>
-              </Text>
-              <View>
-                <Text style={styles.contentDataTitle}>{ item.title }</Text>
-              </View>
-              <Text style={[styles.row, styles.colorGray, style2.contentDataItemComment]}>
-                <Text style={style2.comment}>
-                  <Icon name="thumbs-up" /> { item.like }
-                </Text>
-                &emsp;
-                <Text>
-                  <Icon name="comments" /> { item.talk }
-                </Text>
-              </Text>
-            </View>
-          </TouchableHighlight>
-        )
-      }
+    <ContentItem 
+      onTagChange={onTagChange}
+      contentData={contentData} 
+      isRefreshing={isRefreshing}
+      onRefresh={onRefresh}
+      onEndReached={onEndReached}
+      onScroll={onScroll}
+      {...props} 
     />
   )
 }
-
-const style2 = StyleSheet.create({
-  contentDataItemComment: {
-    alignSelf: 'flex-start',
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderColor: '#eee',
-    borderWidth: 1,
-  },
-  comment: {
-    alignSelf: 'flex-start',
-    borderRightColor: '#000',
-    borderRightWidth: 1
-  }
-});
 
 export default Recommand;

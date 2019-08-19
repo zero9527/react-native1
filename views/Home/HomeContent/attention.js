@@ -1,21 +1,66 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Image, Text, TouchableHighlight } from 'react-native';
+import ContentItem from './contentItem';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { headerTagChangeList } from './index';
 import styles from './style';
 import { attention } from '../data';
 
-function Attention() {
+let timer;
+
+function Attention(props) {
   const [contentData, setContentData] = useState(attention);
+  const [isRefreshing, setIsRefreshing] = useState(true);
+
+  useEffect(() => {
+    // if (!headerTagChangeList[props.contentType]) 
+    onRefresh();
+
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [props]);
+
+  function onRefresh() {
+    setIsRefreshing(true);
+    timer = setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
+  }
+
+  function onEndReached({ distanceFromEnd }) {
+    console.log('distanceFromEnd: ', distanceFromEnd);
+    setContentData(contentData.concat(attention[0]));
+  }
+
+  function onScroll(e) {
+    // console.log(e);
+  }
+
+  function onTagChange(type) {
+    console.log(type);
+  }
+
+  function toDetail(item) {
+    props.navigation.navigate("Detail");
+  }
 
   return (
-    <>
-      {
-        contentData.map((item, index) => {
-          return (
+    <ContentItem 
+      onTagChange={onTagChange}
+      contentData={contentData} 
+      isRefreshing={isRefreshing}
+      onRefresh={onRefresh}
+      onEndReached={onEndReached}
+      onScroll={onScroll}
+      {...props} 
+      renderItem={
+        ({item, index}) => (
+          <TouchableHighlight 
+            underlayColor="#f6f6f6"
+            onPress={() => toDetail(item)}>
             <View 
-              key={index}
-              style={styles.contentDataItem}
-            >
+              style={styles.contentDataItem}>
               <Text style={[styles.row, styles.colorGray]}>
                 <Text style={{ color: 'purple' }}>{ item.type } · </Text>
                 <Text>{ item.author } · { item.time } · </Text>
@@ -34,10 +79,10 @@ function Attention() {
                 </Text>
               </Text>
             </View>
-          )
-        })
+          </TouchableHighlight>
+        )
       }
-    </>
+    />
   )
 }
 

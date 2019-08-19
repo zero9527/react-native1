@@ -75,9 +75,6 @@ const styles = StyleSheet.create({
     color: '#ccc',
     fontSize: 14
   },
-  header: {
-    paddingVertical: 10,
-  },
   headerMain: {
     paddingHorizontal: 10,
     flexDirection: 'row',
@@ -90,7 +87,7 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   headerTag: {
-    borderBottomColor: '#eee',
+    borderBottomColor: '#ddd',
     borderBottomWidth: 1,
   },
   headerTagItem: {
