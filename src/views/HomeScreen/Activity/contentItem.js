@@ -76,7 +76,7 @@ function ContentItem(props) {
           <View>
             <Text style={styles.contentDataTitle}>{ item.title }</Text>
           </View>
-          <Text style={[styles.row, styles.colorGray, style2.contentDataItemComment]}>
+          <Text style={[styles.row, styles.colorGray, style2.commentContainer]}>
             <Text style={style2.comment}>
               <Icon name="thumbs-up" /> { item.like }
             </Text>
@@ -108,7 +108,7 @@ function ContentItem(props) {
 }
 
 const style2 = StyleSheet.create({
-  contentDataItemComment: {
+  commentContainer: {
     alignSelf: 'flex-start',
     paddingVertical: 2,
     paddingHorizontal: 8,

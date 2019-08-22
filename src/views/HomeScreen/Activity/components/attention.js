@@ -119,7 +119,7 @@ const style2 = StyleSheet.create({
   author: {
     fontSize: 16
   },
-  contentDataItemComment: {
+  commentContainer: {
     alignSelf: 'flex-start',
     // paddingVertical: 2,
     paddingHorizontal: 8,

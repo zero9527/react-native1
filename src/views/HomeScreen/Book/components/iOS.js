@@ -3,18 +3,23 @@ import ContentItem from '../contentItem';
 import { Text } from 'react-native';
 import { iOS } from '../data';
 
+let timer;
+
 function IOS(props) {
   const [contentData, setContentData] = useState(iOS);
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   useEffect(() => {
     onRefresh();
+
+    return () => {
+      clearTimeout(timer);
+    }
   }, []);
 
   function onRefresh() {
-    console.log('下拉刷新');
     setIsRefreshing(true);
-    setTimeout(() => {
+    timer = setTimeout(() => {
       setIsRefreshing(false);
     }, 1000);
   }

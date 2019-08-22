@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Image, Picker, Text, DeviceEventEmitter } from 'react-native';
+import { StyleSheet, View, Image, Picker, Text } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import { THEME_COLOR } from 'src/utils';
 import logo from '../../images/wallhaven-kw1ky2.jpg';
+
+import MPicker from 'src/components/m-picker';
 
 const Header = (props) => {
   const [headerTagActive, setHeaderTagActive] = useState(0);
@@ -74,7 +76,7 @@ const Header = (props) => {
           style={{ width: 40, height: 40 }} 
           onPress={() => props.navigation.navigate('Home')}
         />
-        <Picker
+        {/* <Picker
           selectedValue={headerTitle}
           style={{ height: 50, width: 100 }}
           onValueChange={(itemValue, itemIndex) => headerTitleChange(itemValue)}>
@@ -83,7 +85,18 @@ const Header = (props) => {
           <Picker.Item label="话题" value="topic" />
           <Picker.Item label="小册" value="book" />
           <Picker.Item label="活动" value="activity" />
-        </Picker>
+        </Picker> */}
+        <MPicker 
+          select={headerTitle} 
+          menuList={[
+            { value: 'home', label: '首页' },
+            { value: 'hotdot', label: '沸点' },
+            { value: 'topic', label: '话题' },
+            { value: 'book', label: '小册' },
+            { value: 'activity', label: '活动' },
+          ]}
+          onChange={(value) => headerTitleChange(value)}
+        />
       </View>
       <ScrollView horizontal={true} style={styles.headerTag}>
         {
@@ -119,7 +132,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     borderBottomColor: '#eee',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    zIndex: 10
   },
   headerTitle: {
     position: 'relative',
