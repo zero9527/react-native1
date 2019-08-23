@@ -1,12 +1,30 @@
-import React, { useState, useMemo } from 'react';
-import { StyleSheet, FlatList, View, Image, Text, TouchableHighlight } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useState } from 'react';
+import { StyleSheet, FlatList, View, Text, TouchableHighlight, DeviceEventEmitter } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
+import { Fab } from 'native-base';
 import styles from './style';
 
 function ContentItem(props) {
+  const [scrollTopLast, setScrollTopLast] = useState(0);
+  const [showFabBtn, setShowFabBtn] = useState(false);
+
+  const flatlistRef = React.createRef();
   
   function toDetail(item) {
     props.navigation.navigate("Detail", { id: item.id, date: Date.now() });
+  }
+
+  function onScroll(event) {
+    const scrollTopCurrent = event.nativeEvent.contentOffset.y;
+    props.onScroll(scrollTopCurrent, scrollTopLast);
+    DeviceEventEmitter.emit('contentScroll', scrollTopCurrent, scrollTopLast);
+    setScrollTopLast(scrollTopCurrent);
+    setShowFabBtn(scrollTopCurrent > 500 ? true : false);
+  }
+
+  function toTop() {
+    setShowFabBtn(!showFabBtn);
+    flatlistRef.current.scrollToOffset({ y: 0});
   }
 
   // 默认的渲染列表
@@ -45,18 +63,33 @@ function ContentItem(props) {
   }
 
   return (
-    <FlatList
-      keyExtractor={(item, index) => index.toString()}
-      data={props.contentData}
-      refreshing={props.isRefreshing}
-      onScroll={props.onScroll}
-      onRefresh={props.onRefresh}
-      onEndReached={props.onEndReached}
-      onEndReachedThreshold="0.5"
-      renderItem={
-        props.renderItem || RenderItem()
+    <>
+      <FlatList
+        keyExtractor={(item, index) => index.toString()}
+        data={props.contentData}
+        refreshing={props.isRefreshing}
+        scrollEventThrottle={100}
+        onScroll={onScroll}
+        onRefresh={props.onRefresh}
+        onEndReached={props.onEndReached}
+        onEndReachedThreshold="0.5"
+        ref={flatlistRef}
+        renderItem={
+          props.renderItem || RenderItem()
+        }
+      />
+
+      {showFabBtn && 
+        <Fab
+          direction="up"
+          containerStyle={{ }}
+          style={{ width: 50, height: 50, backgroundColor: '#fff' }}
+          position="bottomRight"
+          onPress={toTop}>
+          <Icon name="caretup" style={{ fontSize: 12, color: '#ccc' }} />
+        </Fab>
       }
-    />
+    </>
   )
 }
 

@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Image, Picker, Text } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
-import { THEME_COLOR } from 'src/utils';
-import logo from '../../images/wallhaven-kw1ky2.jpg';
+import { THEME_COLOR, GRAY_COLOR } from 'src/utils';
+import logo from 'src/images/wallhaven-kw1ky2.jpg';
 
-import MPicker from 'src/components/m-picker';
+// import MPicker from 'src/components/m-picker';
 
 const Header = (props) => {
   const [headerTagActive, setHeaderTagActive] = useState(0);
-  const [headerTitle, setHeaderTitle] = useState('home');
+  const [headerTitle, setHeaderTitle] = useState(props.headerTitle);
 
+  const headerTitleList = [
+    { label: '首页', value: 'home' },
+    { label: '沸点', value: 'hotdot' },
+    { label: '话题', value: 'topic' },
+    { label: '小册', value: 'book' },
+    { label: '活动', value: 'activity' },
+  ];
   const headerTagList = {
     home: [
       { id: 1, text: '推荐', type: 'recommand' },
@@ -70,23 +77,35 @@ const Header = (props) => {
 
   return (
     <View style={styles.header}>
-      <View style={styles.headerMain}>
+      <View style={[
+        styles.headerMain, {
+          display: props.showHeaderTitle ? 'flex' : 'none'
+        }
+      ]}>
         <Image 
           source={ logo } 
           style={{ width: 40, height: 40 }} 
           onPress={() => props.navigation.navigate('Home')}
         />
-        {/* <Picker
+        <Picker
           selectedValue={headerTitle}
-          style={{ height: 50, width: 100 }}
-          onValueChange={(itemValue, itemIndex) => headerTitleChange(itemValue)}>
-          <Picker.Item label="首页" value="home" style={{color: 'blue'}} />
-          <Picker.Item label="沸点" value="hotdot" />
-          <Picker.Item label="话题" value="topic" />
-          <Picker.Item label="小册" value="book" />
-          <Picker.Item label="活动" value="activity" />
-        </Picker> */}
-        <MPicker 
+          style={{ height: 50, width: 100, color: THEME_COLOR }}
+          onValueChange={(itemValue, itemIndex) => headerTitleChange(itemValue)}
+        >
+          {
+            headerTitleList.map((item, index) => {
+              return (
+                <Picker.Item 
+                  key={index} 
+                  label={item.label} 
+                  value={item.value} 
+                  style={{ color:  headerTitle === item.value ? THEME_COLOR : GRAY_COLOR}} 
+                />
+              )
+            })
+          }
+        </Picker>
+        {/* <MPicker 
           select={headerTitle} 
           menuList={[
             { value: 'home', label: '首页' },
@@ -96,7 +115,7 @@ const Header = (props) => {
             { value: 'activity', label: '活动' },
           ]}
           onChange={(value) => headerTitleChange(value)}
-        />
+        /> */}
       </View>
       <ScrollView horizontal={true} style={styles.headerTag}>
         {
@@ -125,6 +144,13 @@ const styles = StyleSheet.create({
   colorGray: {
     color: '#ccc',
     fontSize: 14
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    zIndex: 2
   },
   headerMain: {
     flexDirection: 'row',

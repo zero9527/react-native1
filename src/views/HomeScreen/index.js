@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Header from './Header';
 import Home from './Home';
 import HotDot from './HotDot';
@@ -9,8 +10,23 @@ import Activity from './Activity';
 // 首页
 const HomeScreen = (props) => {
   const [contentType, setContentType] = useState('recommand');
-  const [headerTitle, setHeaderTitle] = useState('home');
+  const [headerTitle, setHeaderTitle] = useState('hotdot');
+  const [showHeaderTitle, setShowHeaderTitle] = useState(true);
 
+  useEffect(() => {
+    DeviceEventEmitter.addListener('contentScroll', onScroll);
+  }, []);
+
+  function onScroll(scrollTopCurrent, scrollTopLast) {
+    // console.log(scrollTopCurrent, scrollTopLast);
+    if (scrollTopCurrent < 50) {
+      setShowHeaderTitle(true);
+      return;
+    }
+    setShowHeaderTitle(scrollTopCurrent > scrollTopLast ? false : true);
+  }
+
+  // 动态组件加载方式1
   function ContentComponent(compProps) {
     const list = {
       home: <Home {...compProps} />,
@@ -22,18 +38,43 @@ const HomeScreen = (props) => {
     return list[headerTitle];
   }
 
+  // 动态组件加载方式2
+  const compProps = useMemo(() => {
+    return {
+      style: styles.contentStyle,
+      contentType: contentType,
+      navigation: props.navigation
+    }
+  }, [contentType]);
+
   return (
-    <>
+    <View style={{paddingTop: showHeaderTitle ? 110 : 70}}>
       <Header 
+        showHeaderTitle={showHeaderTitle}
+        headerTitle={headerTitle}
         onTagChange={(type) => setContentType(type)} 
         onHeaderTitleChange={(value) => setHeaderTitle(value)}
       />
-      <ContentComponent 
+      {/* 动态组件加载方式1 */}
+      {/* <ContentComponent 
         contentType={contentType} 
         navigation={props.navigation} 
-      />
-    </>
+      /> */}
+      
+      {/* 动态组件加载方式2 */}
+      {headerTitle === 'home' && <Home {...compProps} />}
+      {headerTitle === 'hotdot' && <HotDot {...compProps} />}
+      {headerTitle === 'topic' && <Topic {...compProps} />}
+      {headerTitle === 'book' && <Book {...compProps} />}
+      {headerTitle === 'activity' && <Activity {...compProps} />}
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  contentStyle: {
+    paddingTop: 100
+  }
+});
 
 export default HomeScreen;

@@ -21,6 +21,10 @@ function Recommand(props) {
     }
   }, []);
 
+  function toDetail(item) {
+    props.navigation.navigate("Detail", { id: item.id, date: Date.now() });
+  }
+
   function onRefresh() {
     setIsRefreshing(true);
     timer = setTimeout(() => {
@@ -28,7 +32,7 @@ function Recommand(props) {
     }, 1000);
   }
 
-  function onEndReached({ distanceFromEnd }) {
+  function onEndReached() {
     setContentData(contentData.concat(recommand[0]));
   }
 
