@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
+import { Text, Button } from 'native-base';
 import Header from './Header';
 import Home from './Home';
 import HotDot from './HotDot';
@@ -12,6 +13,7 @@ const HomeScreen = (props) => {
   const [contentType, setContentType] = useState('recommand');
   const [headerTitle, setHeaderTitle] = useState('hotdot');
   const [showHeaderTitle, setShowHeaderTitle] = useState(true);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     DeviceEventEmitter.addListener('contentScroll', onScroll);
@@ -27,7 +29,7 @@ const HomeScreen = (props) => {
   }
 
   // 动态组件加载方式1
-  function ContentComponent(compProps) {
+  function ContentComponent() {
     const list = {
       home: <Home {...compProps} />,
       hotdot: <HotDot {...compProps} />,
@@ -38,7 +40,6 @@ const HomeScreen = (props) => {
     return list[headerTitle];
   }
 
-  // 动态组件加载方式2
   const compProps = useMemo(() => {
     return {
       style: styles.contentStyle,
@@ -55,18 +56,16 @@ const HomeScreen = (props) => {
         onTagChange={(type) => setContentType(type)} 
         onHeaderTitleChange={(value) => setHeaderTitle(value)}
       />
+      
       {/* 动态组件加载方式1 */}
-      {/* <ContentComponent 
-        contentType={contentType} 
-        navigation={props.navigation} 
-      /> */}
+      { ContentComponent() }
       
       {/* 动态组件加载方式2 */}
-      {headerTitle === 'home' && <Home {...compProps} />}
+      {/* {headerTitle === 'home' && <Home {...compProps} />}
       {headerTitle === 'hotdot' && <HotDot {...compProps} />}
       {headerTitle === 'topic' && <Topic {...compProps} />}
       {headerTitle === 'book' && <Book {...compProps} />}
-      {headerTitle === 'activity' && <Activity {...compProps} />}
+      {headerTitle === 'activity' && <Activity {...compProps} />} */}
     </View>
   )
 }

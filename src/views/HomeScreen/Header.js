@@ -4,7 +4,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { THEME_COLOR, GRAY_COLOR } from 'src/utils';
 import logo from 'src/images/wallhaven-kw1ky2.jpg';
 
-// import MPicker from 'src/components/m-picker';
+import MPicker from 'src/components/m-picker';
 
 const Header = (props) => {
   const [headerTagActive, setHeaderTagActive] = useState(0);
@@ -87,7 +87,7 @@ const Header = (props) => {
           style={{ width: 40, height: 40 }} 
           onPress={() => props.navigation.navigate('Home')}
         />
-        <Picker
+        {/* <Picker
           selectedValue={headerTitle}
           style={{ height: 50, width: 100, color: THEME_COLOR }}
           onValueChange={(itemValue, itemIndex) => headerTitleChange(itemValue)}
@@ -104,8 +104,8 @@ const Header = (props) => {
               )
             })
           }
-        </Picker>
-        {/* <MPicker 
+        </Picker> */}
+        <MPicker 
           select={headerTitle} 
           menuList={[
             { value: 'home', label: '首页' },
@@ -115,7 +115,7 @@ const Header = (props) => {
             { value: 'activity', label: '活动' },
           ]}
           onChange={(value) => headerTitleChange(value)}
-        /> */}
+        />
       </View>
       <ScrollView horizontal={true} style={styles.headerTag}>
         {
