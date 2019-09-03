@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { THEME_COLOR } from 'src/utils';
 import { attention } from '../data';
 import img from 'src/images/wallhaven-kw1ky1.jpg';
-import styles from '../style';
+import styles from '../../contentCpmponentStyle';
 
 let timer;
 
@@ -19,7 +19,7 @@ function Attention(props) {
     return () => {
       clearTimeout(timer);
     }
-  }, [props]);
+  }, []);
 
   function onRefresh() {
     setIsRefreshing(true);
@@ -29,12 +29,7 @@ function Attention(props) {
   }
 
   function onEndReached({ distanceFromEnd }) {
-    console.log('distanceFromEnd: ', distanceFromEnd);
     setContentData(contentData.concat(attention[0]));
-  }
-
-  function onScroll(e) {
-    // console.log(e);
   }
 
   function onTagChange(type) {
@@ -53,7 +48,6 @@ function Attention(props) {
         isRefreshing={isRefreshing}
         onRefresh={onRefresh}
         onEndReached={onEndReached}
-        onScroll={onScroll}
         {...props} 
         renderItem={
           ({item, index}) => (
@@ -65,7 +59,7 @@ function Attention(props) {
                   styles.contentDataItem, 
                   style2.contentDataItem, {
                     borderTopColor: '#eee',
-                    borderTopWidth: index === 0 ? 12 : 0
+                    borderTopWidth: index === 0 ? 8 : 0
                   }
                 ]}>
                 <View style={style2.header}>

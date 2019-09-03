@@ -8,12 +8,10 @@ function Android(props) {
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   useEffect(() => {
-    console.log(props.renderItem);
     onRefresh();
   }, []);
 
   function onRefresh() {
-    console.log('下拉刷新');
     setIsRefreshing(true);
     setTimeout(() => {
       setIsRefreshing(false);

@@ -5,13 +5,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { attention } from '../data';
 import { THEME_COLOR } from 'src/utils';
 import img from 'src/images/wallhaven-kw1ky1.jpg';
-import styles from '../style';
+import styles from '../../contentCpmponentStyle';
 
 let timer;
 
 function Attention(props) {
   const [contentData, setContentData] = useState(attention);
-  const [isRefreshing, setIsRefreshing] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     onRefresh();
@@ -19,7 +19,7 @@ function Attention(props) {
     return () => {
       clearTimeout(timer);
     }
-  }, [props]);
+  }, []);
 
   function onRefresh() {
     setIsRefreshing(true);
@@ -29,12 +29,7 @@ function Attention(props) {
   }
 
   function onEndReached({ distanceFromEnd }) {
-    console.log('distanceFromEnd: ', distanceFromEnd);
     setContentData(contentData.concat(attention[0]));
-  }
-
-  function onScroll(e) {
-    // console.log(e);
   }
 
   function onTagChange(type) {
@@ -47,14 +42,12 @@ function Attention(props) {
 
   return (
     <>
-      <View style={{ borderTopColor: '#eee', borderTopWidth: 8 }} />
       <ContentItem 
         onTagChange={onTagChange}
         contentData={contentData} 
         isRefreshing={isRefreshing}
         onRefresh={onRefresh}
         onEndReached={onEndReached}
-        onScroll={onScroll}
         {...props} 
         renderItem={
           ({item, index}) => (
@@ -101,14 +94,14 @@ function Attention(props) {
 const style2 = StyleSheet.create({
   contentDataItem: {
     paddingHorizontal: 0,
-    paddingBottom: 8,
+    paddingBottom: 16,
     borderBottomColor: '#eee',
     borderBottomWidth: 10,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
   },
   headimg: {
     width: 50,
@@ -137,7 +130,7 @@ const style2 = StyleSheet.create({
   },
   contentDataTitle: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
   },
   itemContent: {
     paddingHorizontal: 16,

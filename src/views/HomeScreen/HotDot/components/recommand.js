@@ -5,7 +5,7 @@ import ContentItem from '../contentItem';
 import { recommand } from '../data';
 import img from 'src/images/wallhaven-kw1ky1.jpg';
 import { THEME_COLOR } from 'src/utils';
-import styles from '../style';
+import styles from '../../contentCpmponentStyle';
 
 let timer;
 
@@ -36,10 +36,6 @@ function Recommand(props) {
     setContentData(contentData.concat(recommand[0]));
   }
 
-  function onScroll(e) {
-    // console.log(e);
-  }
-
   function onTagChange(type) {
     console.log(type);
   }
@@ -51,7 +47,6 @@ function Recommand(props) {
       isRefreshing={isRefreshing}
       onRefresh={onRefresh}
       onEndReached={onEndReached}
-      onScroll={onScroll}
       {...props} 
       renderItem={
         ({item, index}) => (
@@ -60,9 +55,10 @@ function Recommand(props) {
             onPress={() => toDetail(item)}>
             <View 
               style={[
-                styles.contentDataItem, {
+                styles.contentDataItem,
+                style2.contentDataItem, {
                   borderTopColor: '#eee',
-                  borderTopWidth: index === 0 ? 12 : 0
+                  borderTopWidth: index === 0 ? 8 : 0
                 }
               ]}>
               <View style={style2.header}>
@@ -104,6 +100,7 @@ function Recommand(props) {
 
 const style2 = StyleSheet.create({
   contentDataItem: {
+    paddingHorizontal: 0,
     paddingBottom: 8,
     borderBottomColor: '#eee',
     borderBottomWidth: 10,

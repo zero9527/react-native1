@@ -1,11 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import { StyleSheet, FlatList, View, Image, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, FlatList, View, Image, Text, TouchableHighlight, DeviceEventEmitter } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Fab } from 'native-base';
 import { THEME_COLOR } from 'src/utils';
-import styles from './style';
+import styles from '../contentCpmponentStyle';
 
 function ContentItem(props) {
   const [contentTagActive, setContentTagActive] = useState('hot');
+  const [scrollTopLast, setScrollTopLast] = useState(0);
+  const [showFabBtn, setShowFabBtn] = useState(false);
+
+  const flatlistRef = React.createRef();
+  
   const contentTagList = [
     { id: 1, text: '热门', type: 'hot' },
     { id: 2, text: '最新', type: 'new' },
@@ -19,6 +25,18 @@ function ContentItem(props) {
 
   function toDetail(item) {
     props.navigation.navigate("Detail", { id: item.id, date: Date.now() });
+  }
+
+  function onScroll(event) {
+    const scrollTopCurrent = event.nativeEvent.contentOffset.y;
+    setScrollTopLast(scrollTopCurrent);
+    setShowFabBtn(scrollTopCurrent > 500 ? true : false);
+    DeviceEventEmitter.emit('contentScroll', scrollTopCurrent, scrollTopLast);
+  }
+
+  function toTop() {
+    setShowFabBtn(!showFabBtn);
+    flatlistRef.current.scrollToOffset({ y: 0});
   }
 
   const showBorder = useMemo(() => {
@@ -67,7 +85,7 @@ function ContentItem(props) {
         underlayColor="#f6f6f6"
         onPress={() => toDetail(item)}>
         <View 
-          style={styles.contentDataItem}>
+          style={[styles.contentDataItem]}>
           <Text style={[styles.row, styles.colorGray]}>
             <Text style={{ color: 'purple' }}>{ item.type } · </Text>
             <Text>{ item.author } · { item.time } · </Text>
@@ -91,19 +109,34 @@ function ContentItem(props) {
   }
 
   return (
-    <FlatList
-      keyExtractor={(item, index) => index.toString()}
-      ListHeaderComponent={ListHeaderComponent}
-      data={props.contentData}
-      refreshing={props.isRefreshing}
-      onScroll={props.onScroll}
-      onRefresh={props.onRefresh}
-      onEndReached={props.onEndReached}
-      onEndReachedThreshold="0.5"
-      renderItem={
-        props.renderItem || RenderItem()
+    <>
+      <FlatList
+        keyExtractor={(item, index) => index.toString()}
+        ListHeaderComponent={ListHeaderComponent}
+        data={props.contentData}
+        refreshing={props.isRefreshing}
+        onScroll={onScroll}
+        onRefresh={props.onRefresh}
+        onEndReached={props.onEndReached}
+        onEndReachedThreshold="0.5"
+        ref={flatlistRef}
+        style={props.style || styles.flatlist}
+        renderItem={
+          props.renderItem || RenderItem()
+        }
+      />
+
+      {showFabBtn && 
+        <Fab
+          direction="up"
+          containerStyle={{ }}
+          style={{ width: 50, height: 50, backgroundColor: '#fff' }}
+          position="bottomRight"
+          onPress={toTop}>
+          <Icon name="caret-up" style={{ fontSize: 20, color: '#ccc' }} />
+        </Fab>
       }
-    />
+    </>
   )
 }
 

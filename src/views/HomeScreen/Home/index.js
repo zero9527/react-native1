@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { StyleSheet, View } from 'react-native';
 import ContentLimit from './contentLimit';
 import Recommand from './components/recommand';
@@ -12,33 +12,34 @@ import AI from './components/ai';
 const Content = (props) => {
   const [contentLimit, setContentLimit] = useState('All');
 
-  function ContentComponent(compProps) {
-    const list = {
-      recommand: <Recommand {...compProps} />,
-      attention: <Attention {...compProps} />,
-      backend: <Backend {...compProps} />,
-      frontend: <Frontend {...compProps} />,
-      android: <Android {...compProps} />,
-      iOS: <IOS {...compProps} />,
-      ai: <AI {...compProps} />
-    };
-    return list[compProps.contentType];
-  }
-
   const showContentLimit = useMemo(() => {
     return props.contentType !== 'recommand' && props.contentType !== 'attention'
+  }, [props.contentType]);
+
+  const compProps = useMemo(() => {
+    return {
+      limit: contentLimit,
+      navigation: props.navigation
+    }
   }, [props.contentType]);
 
   return (
     <View style={styles.container}>
       { showContentLimit && 
-        <ContentLimit type={props.contentType} onLimitChange={(limit) => setContentLimit(limit)} />
+        <ContentLimit 
+          type={props.contentType} 
+          showHeaderTitle={props.showHeaderTitle} 
+          onLimitChange={(limit) => setContentLimit(limit)} 
+        />
       }
-      <ContentComponent 
-        limit={contentLimit} 
-        contentType={props.contentType}
-        navigation={props.navigation} 
-      />
+
+      {props.contentType === 'recommand' && <Recommand {...compProps} />}
+      {props.contentType === 'attention' && <Attention {...compProps} />}
+      {props.contentType === 'backend' && <Backend {...compProps} />}
+      {props.contentType === 'frontend' && <Frontend {...compProps} />}
+      {props.contentType === 'android' && <Android {...compProps} />}
+      {props.contentType === 'iOS' && <IOS {...compProps} />}
+      {props.contentType === 'ai' && <AI {...compProps} />}
     </View>
   )
 }
@@ -50,9 +51,6 @@ const styles = StyleSheet.create({
   colorGray: {
     color: '#ccc',
     fontSize: 14
-  },
-  container: {
-    paddingBottom: 50
   }
 })
 

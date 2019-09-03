@@ -2,18 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ContentItem from '../contentItem';
 import { backend } from '../data';
 
+let timer = null;
+
 function Backend(props) {
   const [contentData, setContentData] = useState(backend);
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   useEffect(() => {
     onRefresh();
+
+    return () => {
+      clearTimeout(timer);
+    }
   }, []);
 
   function onRefresh() {
-    console.log('下拉刷新');
     setIsRefreshing(true);
-    setTimeout(() => {
+    timer = setTimeout(() => {
       setIsRefreshing(false);
     }, 1000);
   }
@@ -33,6 +38,7 @@ function Backend(props) {
       isRefreshing={isRefreshing}
       onRefresh={onRefresh}
       onEndReached={onEndReached}
+      style={{ paddingTop: 190 }}
       {...props}
     />
   )

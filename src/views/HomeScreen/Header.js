@@ -1,23 +1,21 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Image, Picker, Text } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Image, Picker, Text, Animated } from 'react-native';
 import { ScrollView } from "react-native-gesture-handler";
 import { THEME_COLOR, GRAY_COLOR } from 'src/utils';
 import logo from 'src/images/wallhaven-kw1ky2.jpg';
 
-import MPicker from 'src/components/m-picker';
+// import MPicker from 'src/components/m-picker';
 
 const Header = (props) => {
-  const [headerTagActive, setHeaderTagActive] = useState(0);
+  const [contentTypeActive, setContentTypeActive] = useState(props.contentType || 'recommand');
   const [headerTitle, setHeaderTitle] = useState(props.headerTitle);
+  const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0));
 
   const headerTitleList = [
     { label: '首页', value: 'home' },
-    { label: '沸点', value: 'hotdot' },
-    { label: '话题', value: 'topic' },
-    { label: '小册', value: 'book' },
-    { label: '活动', value: 'activity' },
+    { label: '沸点', value: 'hotdot' }
   ];
-  const headerTagList = {
+  const contentTypeList = {
     home: [
       { id: 1, text: '推荐', type: 'recommand' },
       { id: 2, text: '关注', type: 'attention' },
@@ -65,9 +63,21 @@ const Header = (props) => {
     ],
   };
 
-  function headerTagChange(item, index) {
-    setHeaderTagActive(index);
-    props.onTagChange(item.type);
+  useEffect(() => {
+    setContentTypeActive(props.contentType)
+  }, [props.contentType]);
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: props.showHeaderTitle ? 0 : -60,
+      duration: 300,
+      useNativeDriver: true
+    }).start();
+  }, [props.showHeaderTitle]);
+
+  function onContentTypeChange(item) {
+    setContentTypeActive(item.type);
+    props.onContentTypeChange(item.type);
   }
 
   function headerTitleChange(value) {
@@ -76,18 +86,18 @@ const Header = (props) => {
   }
 
   return (
-    <View style={styles.header}>
-      <View style={[
-        styles.headerMain, {
-          display: props.showHeaderTitle ? 'flex' : 'none'
-        }
-      ]}>
+    <Animated.View style={[
+      styles.header, {
+        translateY: fadeAnim
+      }
+    ]}>
+      <View style={styles.headerMain}>
         <Image 
           source={ logo } 
           style={{ width: 40, height: 40 }} 
           onPress={() => props.navigation.navigate('Home')}
         />
-        {/* <Picker
+        <Picker
           selectedValue={headerTitle}
           style={{ height: 50, width: 100, color: THEME_COLOR }}
           onValueChange={(itemValue, itemIndex) => headerTitleChange(itemValue)}
@@ -104,8 +114,8 @@ const Header = (props) => {
               )
             })
           }
-        </Picker> */}
-        <MPicker 
+        </Picker>
+        {/* <MPicker 
           select={headerTitle} 
           menuList={[
             { value: 'home', label: '首页' },
@@ -115,25 +125,25 @@ const Header = (props) => {
             { value: 'activity', label: '活动' },
           ]}
           onChange={(value) => headerTitleChange(value)}
-        />
+        /> */}
       </View>
-      <ScrollView horizontal={true} style={styles.headerTag}>
+      <ScrollView horizontal={true} style={styles.contentType}>
         {
-          headerTagList[headerTitle].map((item, index) => {
+          contentTypeList[headerTitle].map((item, index) => {
             return (
               <Text 
                 key={index}
                 style={[
-                  styles.headerTagItem, 
-                  { color: index === headerTagActive ? THEME_COLOR : 'gray'}
+                  styles.contentTypeItem, 
+                  { color: item.type === contentTypeActive ? THEME_COLOR : 'gray'}
                 ]} 
-                onPress={() => headerTagChange(item, index)}
+                onPress={() => onContentTypeChange(item)}
               >{ item.text }</Text>
             )
           })
         }
       </ScrollView>
-    </View>
+    </Animated.View>
   )
 }
 
@@ -149,8 +159,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    backgroundColor: '#fff',
-    zIndex: 2
+    zIndex: 3
   },
   headerMain: {
     flexDirection: 'row',
@@ -159,6 +168,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
+    backgroundColor: '#fff',
     zIndex: 10
   },
   headerTitle: {
@@ -166,11 +176,12 @@ const styles = StyleSheet.create({
     color: THEME_COLOR,
     marginLeft: 10
   },
-  headerTag: {
+  contentType: {
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
+    backgroundColor: '#fff',
   },
-  headerTagItem: {
+  contentTypeItem: {
     paddingVertical: 16,
     paddingHorizontal: 16,
     color: 'gray'

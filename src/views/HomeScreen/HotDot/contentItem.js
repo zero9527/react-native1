@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, FlatList, View, Text, TouchableHighlight, DeviceEventEmitter } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Fab } from 'native-base';
-import styles from './style';
+import styles from '../contentCpmponentStyle';
 
 function ContentItem(props) {
   const [scrollTopLast, setScrollTopLast] = useState(0);
@@ -16,10 +16,9 @@ function ContentItem(props) {
 
   function onScroll(event) {
     const scrollTopCurrent = event.nativeEvent.contentOffset.y;
-    props.onScroll(scrollTopCurrent, scrollTopLast);
-    DeviceEventEmitter.emit('contentScroll', scrollTopCurrent, scrollTopLast);
     setScrollTopLast(scrollTopCurrent);
     setShowFabBtn(scrollTopCurrent > 500 ? true : false);
+    DeviceEventEmitter.emit('contentScroll', scrollTopCurrent, scrollTopLast);
   }
 
   function toTop() {
@@ -37,7 +36,7 @@ function ContentItem(props) {
           style={[
             styles.contentDataItem, {
               borderTopColor: '#eee',
-              borderTopWidth: index === 0 ? 12 : 0
+              borderTopWidth: index === 0 ? 8 : 0
             }
           ]}>
           <Text style={[styles.row, styles.colorGray]}>
@@ -54,7 +53,7 @@ function ContentItem(props) {
             </Text>
             &emsp;
             <Text>
-              <Icon name="comments" /> { item.talk }
+              <Icon name="comments-o" /> { item.talk }
             </Text>
           </Text>
         </View>
@@ -74,6 +73,7 @@ function ContentItem(props) {
         onEndReached={props.onEndReached}
         onEndReachedThreshold="0.5"
         ref={flatlistRef}
+        style={props.style || styles.flatlist}
         renderItem={
           props.renderItem || RenderItem()
         }
@@ -86,7 +86,7 @@ function ContentItem(props) {
           style={{ width: 50, height: 50, backgroundColor: '#fff' }}
           position="bottomRight"
           onPress={toTop}>
-          <Icon name="caretup" style={{ fontSize: 12, color: '#ccc' }} />
+          <Icon name="caret-up" style={{ fontSize: 20, color: '#ccc' }} />
         </Fab>
       }
     </>
@@ -97,7 +97,7 @@ const style2 = StyleSheet.create({
   commentContainer: {
     alignSelf: 'flex-start',
     paddingVertical: 2,
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     borderColor: '#eee',
     borderWidth: 1,
   },

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Image, Text, Animated } from 'react-native';
 import { THEME_COLOR } from 'src/utils';
 
 function ContentLimit(props) {
   const [limitActive, setLimitActive] = useState(0);
+  const [fadeAnim, setFadeAnim] = useState(new Animated.Value(0));
 
   const list = {
     recommand: [],
@@ -34,33 +35,52 @@ function ContentLimit(props) {
     ai: [],
   };
 
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: props.showHeaderTitle ? 0 : -60,
+      duration: 300,
+      useNativeDriver: true
+    }).start();
+  }, [props.showHeaderTitle]);
+
   function limitClick(item, index) {
     setLimitActive(index);
     props.onLimitChange(item.limit);
   }
 
   return (
-    <View style={styles.limitContainer}>
-      {
-        list[props.type].map((item, index) => (
-          <Text 
-            key={index} 
-            style={[styles.limitItem, index === limitActive ? styles.limitActive : '']}
-            onPress={() => limitClick(item, index)}
-          >{ item.text }</Text>
-        ))
-      }
-    </View>
+    <>
+      {list[props.type].length > 0 && (
+        <Animated.View style={[
+          styles.limitContainer, {
+            translateY: fadeAnim
+          }
+        ]}>
+          {
+            list[props.type].map((item, index) => (
+              <Text 
+                key={index} 
+                style={[styles.limitItem, index === limitActive ? styles.limitActive : '']}
+                onPress={() => limitClick(item, index)}
+              >{ item.text }</Text>
+            ))
+          }
+        </Animated.View>
+      )}
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   limitContainer: {
+    position: 'absolute',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: 8,
-    paddingTop: 8,
-    backgroundColor: '#eee'
+    paddingHorizontal: 16,
+    // paddingTop: 8,
+    paddingTop: 122,
+    backgroundColor: '#eee',
+    zIndex: 2
   },
   limitItem: {
     alignSelf: 'flex-start',
@@ -68,9 +88,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingVertical: 4,
     paddingHorizontal: 10,
+    borderRadius: 30,
     color: '#999',
-    backgroundColor: '#fff',
-    borderRadius: 30
+    backgroundColor: '#fff'
   },
   limitActive: {
     color: '#fff',

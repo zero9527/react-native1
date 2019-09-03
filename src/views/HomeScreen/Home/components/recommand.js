@@ -24,12 +24,7 @@ function Recommand(props) {
   }
 
   function onEndReached({ distanceFromEnd }) {
-    console.log('distanceFromEnd: ', distanceFromEnd);
     setContentData(contentData.concat(recommand[0]));
-  }
-
-  function onScroll(e) {
-    // console.log(e);
   }
 
   function onTagChange(type) {
@@ -43,7 +38,6 @@ function Recommand(props) {
       isRefreshing={isRefreshing}
       onRefresh={onRefresh}
       onEndReached={onEndReached}
-      onScroll={onScroll}
       {...props} 
     />
   )

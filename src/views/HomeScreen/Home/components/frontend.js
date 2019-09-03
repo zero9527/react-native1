@@ -2,24 +2,29 @@ import React, { useState, useEffect } from 'react';
 import ContentItem from '../contentItem';
 import { frontend } from '../data';
 
+let timer = null;
+
 function Frontend(props) {
   const [contentData, setContentData] = useState(frontend);
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   useEffect(() => {
     onRefresh();
+
+    return () => {
+      clearTimeout(timer);
+    }
   }, []);
 
   function onRefresh() {
-    console.log('下拉刷新');
     setIsRefreshing(true);
-    setTimeout(() => {
+    timer = setTimeout(() => {
       setIsRefreshing(false);
     }, 1000);
   }
 
   function onEndReached({ distanceFromEnd }) {
-    console.log('distanceFromEnd: ', distanceFromEnd);
+    // console.log('distanceFromEnd: ', distanceFromEnd);
   }
 
   function onTagChange(type) {
@@ -33,6 +38,7 @@ function Frontend(props) {
       isRefreshing={isRefreshing}
       onRefresh={onRefresh}
       onEndReached={onEndReached}
+      style={{ paddingTop: 190 }}
       {...props}
     />
   )

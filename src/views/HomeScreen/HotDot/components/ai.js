@@ -12,7 +12,6 @@ function AI(props) {
   }, []);
 
   function onRefresh() {
-    console.log('下拉刷新');
     setIsRefreshing(true);
     setTimeout(() => {
       setIsRefreshing(false);

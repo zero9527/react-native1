@@ -26,7 +26,7 @@ const MPicker = (props) => {
           { menuSelectedText }
         </Text>
         {showMenu && 
-          <View style={styles.menu}>
+          <View style={styles.menu} pointerEvents="auto">
             {
               props.menuList.map((menuitem, index) => {
                 return (
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
   },
   menu: {
     width: 60,
-    position: 'absolute',
-    top: '100%',
-    right: -10,
+    // position: 'absolute',
+    // top: '100%',
+    // right: -10,
     backgroundColor: '#fff',
     borderColor: '#eee',
     borderWidth: 1,
